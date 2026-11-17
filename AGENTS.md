@@ -40,6 +40,8 @@ Thaumaturge Aspect Tooltip，Minecraft 1.21.1 / NeoForge 客户端附属模组�
 - **依赖来源**：dev 运行期依赖只要有官方 Maven / CurseMaven / Modrinth 源，就必须用坐标声明，
   禁止把 jar 放进 `libs/devmods-local/` 或从整合包拷贝。只有确认无可用官方坐标时才允许本地 jar，
   并在 `docs/LOCAL_DEPS.md` 登记版本、来源路径与哈希。
+  Modrinth 坐标的 version 段必须用官方 version ID，禁止用 version_number：同一版本号可同时存在
+  NeoForge / Fabric 构件，裸版本号会解析错 loader（见 `docs/DEV_ENV.md` 与参考仓库的 JECharacters 注释）。
 - **生成资源不手改**：`neoforge.mods.toml` 由 `src/main/templates` 经 `generateModMetadata` 生成。
 - **依赖前置**：`thaumaturge` 在 mods.toml 里是 required，版本下限同步 `gradle.properties` 的
   `thaumaturge_version`。本模组不打包本体。

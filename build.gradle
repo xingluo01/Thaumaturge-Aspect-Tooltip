@@ -199,12 +199,15 @@ dependencies {
     localRuntime 'maven.modrinth:fusion-connected-textures:1.3.16-neoforge-mc1.21.1'
     localRuntime 'maven.modrinth:itemzoomer:2.0.1-1.21.1'
     localRuntime 'maven.modrinth:jade-addons-forge:6.1.2+neoforge'
-    localRuntime 'maven.modrinth:justenoughcharacters:4.5.30'
-    localRuntime 'maven.modrinth:mezzconfig:0.7.1'
+    // Modrinth coordinates with opaque version segments use version IDs, not version numbers:
+    // the same version_number can exist for multiple loaders and a bare number resolves to the
+    // wrong artifact. AE2-Pattern-Disk documents the same trap for JECharacters.
+    localRuntime 'maven.modrinth:justenoughcharacters:iNnJuUnx'
+    localRuntime 'maven.modrinth:mezzconfig:V6oWFnxW'
     localRuntime 'maven.modrinth:mezzconfiggui:mc1.21.1-0.5.5'
     localRuntime 'maven.modrinth:mod-menu-neoforge-edition:1.0.2'
     localRuntime 'maven.modrinth:modernfix:5.27.27+mc1.21.1'
-    localRuntime 'maven.modrinth:polymorph:1.1.0+1.21.1'
+    localRuntime 'maven.modrinth:polymorph:VEburL70'
     localRuntime 'maven.modrinth:sodium:mc1.21.1-0.8.13-neoforge'
     localRuntime 'maven.modrinth:thunderbolt-core:2.0.3'
     localRuntime 'mezz.jei:jei-1.21.1-neoforge:19.70.0.469'

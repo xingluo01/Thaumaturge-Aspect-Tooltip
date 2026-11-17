@@ -97,6 +97,18 @@ BlameJared（JEI）、Latvian（KubeJS/Rhino）。版本与整合包一致，测
 BlameJared、Latvian、JitPack、Shedaniel。本机 `maven.modrinth.com` 不通（TLS 连接被关闭），
 故用 `api.modrinth.com/maven` 提供同一 `maven.modrinth` group，不要改回旧域名。
 
+**Modrinth 坐标必须用 version ID**：`maven.modrinth:<artifact>:<version-id>`。同一 `version_number`
+会同时挂在 NeoForge 与 Fabric 构件上，裸版本号可能解析到另一个 loader 的 jar。三个曾出错的坐标改为：
+
+| mod | 错误写法（裸版本号） | 正确写法（version ID） |
+|---|---|---|
+| jecharacters | `maven.modrinth:justenoughcharacters:4.5.30` | `maven.modrinth:justenoughcharacters:iNnJuUnx` |
+| mezz_config | `maven.modrinth:mezzconfig:0.7.1` | `maven.modrinth:mezzconfig:V6oWFnxW` |
+| polymorph | `maven.modrinth:polymorph:1.1.0+1.21.1` | `maven.modrinth:polymorph:VEburL70` |
+
+参考仓库 AE2-Pattern-Disk 的 `build.gradle:372-374` 明确记录了 JECharacters 的同类陷阱；
+当前 `build.gradle` 也加了对应注释。
+
 **NeoForge 基线已升到 21.1.265**：`thaumicbases` 声明 `neoforge [21.1.265,)`，
 低于此版本 FML 会拒绝加载。21.1.265 也是整合包实例实际使用的版本
 （`axolotl_config.json` 的 `content_set.loader_version`），升基线使 dev 与玩家环境一致。
