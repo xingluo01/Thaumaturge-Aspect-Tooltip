@@ -41,7 +41,7 @@ lithostitched `88cdded5b617e19b4d2676948b5550699de23578`。
 **以 Maven 坐标声明为主**（`build.gradle` 的 `localRuntime '...'`），不用往仓库塞 jar。
 Coordinates 优先 CurseMaven，其余走 Modrinth（通过 `api.modrinth.com/maven`）、
 BlameJared（JEI）、Latvian（KubeJS/Rhino）。版本与整合包一致，测试才反映玩家真实环境。
-少数没有可用公开坐标的 mod 才放本地 jar 到 `libs/devmods-local/`（当前 9 个）。
+少数没有可用公开坐标的 mod 才放本地 jar 到 `libs/devmods-local/`（目录 9 个，当前启用 4 个）。
 名册按用途简单分组（版本以 `build.gradle` 为准；运行时另带入少量传递依赖）：
 
 | 分组 | modid（版本） | 用途 |
@@ -51,7 +51,7 @@ BlameJared（JEI）、Latvian（KubeJS/Rhino）。版本与整合包一致，测
 | 渲染、性能与诊断 | `sodium` 0.8.13、`fusion` 1.3.16、`modernfix` 5.27.27、`spark` 1.10.124、`mod_menu` 1.0.2 | 验证优化环境下的 tooltip，并用 spark 定位卡顿 |
 | Tooltip / JEI 验证 | `jade` 15.10.6、`jadeaddons` 6.1.2、`jei` 19.70.0.469、`jecharacters` 4.5.30、`itemzoomer` 2.0.1、`polymorph` 1.1.0 | tooltip 增强、文本叠加、拼音搜索与多结果提示的主要对照目标 |
 | AE2 样板与存储 | `ae2` 19.2.19、`ae2jeiintegration` 1.2.1、`ae2wtlib` 19.5.1、`extendedae` 2.2.43、`ae2omnicells` 1.1.6、`ae2_pattern_disk` 0.9.13 | 大量带要素物品样本、样板/磁盘/无线终端场景 |
-| 神秘使附属 | `classic_thaumonomicon` 1.0.2、`kubethaum` 1.3.1、`thaumaturgeadditions` 1.2.1、`thaumictracker` 1.1、`automagia` 0.8.7、`thaumicbases` 3.6.023.5、`thaumaturge_tinkerer` 0.3、`thaumadditions` 0.18.26、`thaumictinkerer` 0.1.2-beta、`thaumicenergistics_ce` 2.7.5.4 | 全部依赖本体 `thaumaturge`；覆盖神秘使体系内的 tooltip 场景 |
+| 神秘使附属（保留 3 个） | `thaumicenergistics_ce` 2.7.5.4、`thaumicbases` 3.6.023.5、`thaumaturge_tinkerer` 0.3 | 源质接入 AE2、泛用内容扩展、Tinkerer 移植；其余附属已禁用 |
 
 `ae2_pattern_disk` 为整合包外补入的稳定版，版本取参考仓库 AE2-Pattern-Disk 验证过的值。
 闪电科技三件（`ae2lt`、`ae2ltpp`、`thunderbolt`）已从 dev 环境移除，以排查主菜单卡顿；
@@ -59,9 +59,10 @@ BlameJared（JEI）、Latvian（KubeJS/Rhino）。版本与整合包一致，测
 
 坐标来源：主流 mod 由参考仓库 AE2-Pattern-Disk / TE4 验证过的 curse.maven 坐标声明；
 其余用 jar 的 SHA-1 在 Modrinth API 反查出精确版本坐标。
-9 个本地 jar（`ExtendedAE`、`ae2jeiintegration`、`automagia`、`classic_thaumonomicon`、
-`kubethaum`、`thaumaturge_tinkerer`、`thaumaturgeadditions`、`thaumictinkerer`、`thaumicbases`）
-没有可用公开坐标，仍从整合包拷贝。
+`libs/devmods-local/` 目录仍有 9 个 jar，当前只启用 4 个：`ExtendedAE`、`ae2jeiintegration`、
+`thaumaturge_tinkerer`、`thaumicbases`。其余 5 个神秘使附属 jar 保留文件但不加载：
+`automagia`、`classic_thaumonomicon`、`kubethaum`、`thaumaturgeadditions`、`thaumictinkerer`。
+`thaumadditions` 与 `thaumictracker` 的 Maven 坐标也已从 `build.gradle` 移除。
 本机路径见不进 git 的 `docs/LOCAL_DEPS.md`。
 这些依赖不在 `sources` 里，不影响编译，只影响 `runClient` 的加载列表。
 

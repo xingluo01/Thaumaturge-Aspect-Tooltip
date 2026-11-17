@@ -186,9 +186,7 @@ dependencies {
     localRuntime 'curse.maven:jade-324717:8591319'
     localRuntime 'curse.maven:modern-ui-352491:8206075'
     localRuntime 'curse.maven:spark-361579:6225208'
-    localRuntime 'curse.maven:thaumic-additions-ce-1786566:9470118'
     localRuntime 'curse.maven:thaumic-energistics-ce-1731454:9623964'
-    localRuntime 'curse.maven:thaumic-tracker-1736726:9456926'
     localRuntime 'dev.latvian.mods:kubejs-neoforge:2101.7.2-build.381'
     localRuntime 'dev.latvian.mods:rhino:2101.2.7-build.85'
     localRuntime 'maven.modrinth:ae2-omni-cells:1.1.6-1.21.1-neoforge'
@@ -209,9 +207,15 @@ dependencies {
     localRuntime 'maven.modrinth:sodium:mc1.21.1-0.8.13-neoforge'
     localRuntime 'mezz.jei:jei-1.21.1-neoforge:19.70.0.469'
 
-    // A handful of mods are not published to a Maven reachable here;
-    // drop their jars into libs/devmods-local/ to load them in the dev client.
-    localRuntime fileTree('libs/devmods-local') { include '*.jar' }
+    // A handful of mods are not published to a Maven reachable here. Only the listed
+    // jars load in the dev client; other Thaumaturge addon jars may stay on disk but
+    // are intentionally excluded. See docs/DEV_ENV.md for the active subset.
+    localRuntime fileTree('libs/devmods-local') {
+        include 'ExtendedAE-1.21-2.2.43-neoforge.jar'
+        include 'ae2jeiintegration-1.2.1.jar'
+        include 'thaumaturge_tinkerer-1.21.1-0.3.jar'
+        include 'thaumicbases-3.6.023.5-1.21.1.jar'
+    }
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.4'
