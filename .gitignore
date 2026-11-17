@@ -18,10 +18,11 @@ logs/
 *.log
 *.bak
 
-# Local development dependency jars (Thaumaturge 本体 + dev 测试套件)。
-# 换机器需自行按 docs/DEV_ENV.md 放置，不进 git。
+# Local development dependency jars.
+# Thaumaturge 本体（前置）与少数无公开坐标的测试 mod，换机器按 docs/DEV_ENV.md 放置。
+# 其余测试 mod 已改由 Maven 坐标在 build.gradle 声明，无需本地 jar。
 libs/*.jar
-libs/devmods/*.jar
+libs/devmods-local/*.jar
 
 # 本机绝对路径索引与 dev 环境备注，换机器要改，不进 git。
 docs/LOCAL_DEPS.md

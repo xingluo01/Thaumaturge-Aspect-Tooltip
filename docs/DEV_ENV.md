@@ -27,9 +27,11 @@ Thaumaturge 1.1.0 是 required 前置，缺它 tooltip 注入拿不到要素数�
 
 ### 测试套件（dev-only）
 
-放在 `libs/devmods/`，由一行 `localRuntime fileTree('libs/devmods') { include '*.jar' }`
-整体加载：**往目录里丢 jar 即生效，不用改 build.gradle**。
-版本与整合包一致，测试才反映玩家真实环境；名册如下（27 个 jar，69MB）：
+**以 Maven 坐标声明为主**（`build.gradle` 的 `localRuntime '...'`），不用往仓库塞 jar。
+Coordinates 优先 CurseMaven，其余走 Modrinth（通过 `api.modrinth.com/maven`）、
+BlameJared（JEI）、Latvian（KubeJS/Rhino）。版本与整合包一致，测试才反映玩家真实环境。
+少数没有可用公开坐标的 mod 才放本地 jar 到 `libs/devmods-local/`（当前 9 个）。
+名册如下（41 个 mod：32 个坐标 + 9 个本地 jar）：
 
 | modid | 版本 | 测试用途 |
 |---|---|---|
@@ -61,10 +63,43 @@ Thaumaturge 1.1.0 是 required 前置，缺它 tooltip 注入拿不到要素数�
 | modernfix | 5.27.27 | 启动优化与诊断 |
 | spark | 1.10.124 | 性能采样，定位 tooltip 卡顿 |
 
-jar 来源：25 个从整合包 `mods/` 直接拷贝；`itemzoomer` 与 `mod_menu` 整合包无，
-分别从 Modrinth CDN（2.0.1-1.21.1）与 cursemaven（file id 7312908）下载。
-本机源路径见不进 git 的 `docs/LOCAL_DEPS.md`。
-这些 jar 不在 `sources` 里，不影响编译，只影响 `runClient` 的加载列表。
+**神秘使附属（10 个，整合包装有的全部纳入）**：`classic_thaumonomicon` 1.0.2、
+`kubethaum` 1.3.1、`thaumaturgeadditions` 1.2.1、`thaumictracker` 1.1、
+`automagia` 0.8.7、`thaumicbases` 3.6.023.5、`thaumaturge_tinkerer` 0.3、
+`thaumadditions` 0.18.26、`thaumictinkerer` 0.1.2-beta、`thaumicenergistics_ce` 2.7.5.4。
+全部依赖本体 `thaumaturge`（已在 `libs/` 根，compileOnly + localRuntime）。
+
+**样板磁盘与闪电科技（4 个）**：`ae2_pattern_disk` 0.9.13（整合包 jar）；
+`ae2lt` 2.1.2 + `thunderbolt` 2.0.3 + `ae2ltpp` 1.2.2（整合包无，从 Modrinth CDN 下载，
+版本取参考仓库 AE2-Pattern-Disk 验证过的稳定版，不用更新的 beta）。
+`ae2lt` 的必需前置 `ae2wtlib_api` 与 `thunderbolt` 均已就位。
+
+坐标来源：主流 mod 由参考仓库 AE2-Pattern-Disk / TE4 验证过的 curse.maven 坐标声明；
+其余用 jar 的 SHA-1 在 Modrinth API 反查出精确版本坐标。
+9 个本地 jar（`ExtendedAE`、`ae2jeiintegration`、`automagia`、`classic_thaumonomicon`、
+`kubethaum`、`thaumaturge_tinkerer`、`thaumaturgeadditions`、`thaumictinkerer`、`thaumicbases`）
+没有可用公开坐标，仍从整合包拷贝。本机路径见不进 git 的 `docs/LOCAL_DEPS.md`。
+这些依赖不在 `sources` 里，不影响编译，只影响 `runClient` 的加载列表。
+
+**仓库配置**：`repositories` 段为这些坐标加了 cursemaven、api.modrinth.com/maven、
+BlameJared、Latvian、JitPack、Shedaniel。本机 `maven.modrinth.com` 不通（TLS 连接被关闭），
+故用 `api.modrinth.com/maven` 提供同一 `maven.modrinth` group，不要改回旧域名。
+
+**NeoForge 基线已升到 21.1.265**：`thaumicbases` 声明 `neoforge [21.1.265,)`，
+低于此版本 FML 会拒绝加载。21.1.265 也是整合包实例实际使用的版本
+（`axolotl_config.json` 的 `content_set.loader_version`），升基线使 dev 与玩家环境一致。
+
+### 汉化资源包（dev client）
+
+不走 `localRuntime`，放在 `run/resourcepacks/`，由 `run/options.txt` 的 `resourcePacks` 行启用：
+
+| 包 | 作用 |
+|---|---|
+| `Minecraft-Mod-Language-Modpack-Converted-1.21.1.zip` | 通用 mod 中文层，在前 |
+| `Extra Mods ZH_CH.zip` | 本机补充汉化（17 个命名空间），在后覆盖 |
+
+`run/` 被 gitignore，换机器需重新放置这两个 zip 与 options.txt，
+步骤见 `docs/LOCAL_DEPS.md`。本仓库的要素文案本地化（zh_cn/en_us）仍需按 `docs/TODO.md` 实现。
 
 **配置坑（已修，勿回退）**：MDG 的 `runClient` 走 `clientRuntimeClasspath`，它不会自动继承
 `localRuntime`。build.gradle 的 `configurations` 段必须显式
@@ -77,7 +112,8 @@ dev client 会少加载对应 mod，但构建不会失败（前置 Thaumaturge �
 
 升级 Thaumaturge 时四处同改：jar 文件名、build.gradle 的三条 files() 路径、
 `gradle.properties` 的 `thaumaturge_version`、mods.toml 模板的 `versionRange`。
-升级测试套件时改 `libs/devmods/` 文件名与 build.gradle 对应的 `localRuntime` 行。
+升级测试套件时改 `build.gradle` 里对应的 `localRuntime` 坐标；
+只有 `libs/devmods-local/` 里的 9 个才需要改文件名。
 
 ## 常用命令
 

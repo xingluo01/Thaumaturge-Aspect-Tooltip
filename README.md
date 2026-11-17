@@ -16,7 +16,7 @@ Thaumaturge 本体给部分物品显示要素信息，显示方式随物品而�
 ## 前置
 
 - Minecraft 1.21.1
-- NeoForge 21.1.241+
+- NeoForge 21.1.265+
 - **Thaumaturge 1.1.0+**（required，未打包，需单独安装）
 
 ## 构建

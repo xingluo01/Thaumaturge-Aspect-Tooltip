@@ -4,7 +4,7 @@
 
 ## 一、安装
 
-1. 装 Minecraft 1.21.1 + NeoForge 21.1.241+。
+1. 装 Minecraft 1.21.1 + NeoForge 21.1.265+。
 2. 装 Thaumaturge 1.1.0+（required，缺它进不了世界）。
 3. 把本模组 jar 放进 `mods/`。
 4. 进任意世界。本模组纯客户端，单人 / 多人皆可，服务端无需安装。

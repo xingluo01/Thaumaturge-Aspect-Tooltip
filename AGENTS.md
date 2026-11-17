@@ -9,7 +9,7 @@ Thaumaturge Aspect Tooltip，Minecraft 1.21.1 / NeoForge 客户端附属模组�
 为「有要素数据、但原版 tooltip 没有文本要素行」的物品，在 tooltip 上补一行文本要素显示。
 依赖 Thaumaturge 本体的要素 API；Shift 触发的图形 Chip 版由本体负责，本模组不碰。
 
-**基线：Minecraft 1.21.1 · NeoForge 21.1.241 · Java 21 · ModDevGradle 2.0.144 · Gradle 9.5。**
+**基线：Minecraft 1.21.1 · NeoForge 21.1.265 · Java 21 · ModDevGradle 2.0.144 · Gradle 9.5。**
 权威来源是 `gradle/libs.versions.toml` 与 `gradle.properties`，这一行只是速览。
 
 ## 一、规则类文档（进 git，动手前必读）
