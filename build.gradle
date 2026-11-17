@@ -32,8 +32,10 @@ sourceSets {
 
 configurations {
     runtimeClasspath.extendsFrom localRuntime
-    clientRuntimeClasspath.extendsFrom clientLocalRuntime
-    testRuntimeClasspath.extendsFrom testLocalRuntime
+    // runClient 走 clientRuntimeClasspath，它不会自动继承 localRuntime。
+    // 必须显式接上，否则 dev 客户端加载不到 Thaumaturge 前置与测试套件。
+    clientRuntimeClasspath.extendsFrom clientLocalRuntime, localRuntime
+    testRuntimeClasspath.extendsFrom testLocalRuntime, localRuntime
 }
 
 neoForge {
@@ -130,6 +132,21 @@ dependencies {
     compileOnly files('libs/thaumaturge-1.21.1-NeoForge-1.1.0.jar')
     clientCompileOnly files('libs/thaumaturge-1.21.1-NeoForge-1.1.0.jar')
     localRuntime files('libs/thaumaturge-1.21.1-NeoForge-1.1.0.jar')
+
+    // Dev-only test suite (localRuntime, never shipped). Mirrors the versions in the
+    // reference modpack so manual tooltip/compat testing matches the player's environment.
+    // Jade: tooltip enhancement - the main conflict target for U7 and the regression check.
+    // JadeAddons: Jade companion (requires jade).
+    // JEI + mezz_config + mezz_config_gui: recipe viewer for the container(JEI) test case;
+    //   JEI 19.70 declares mezz_config as required and mezz_config_gui as optional-but-used.
+    // Architectury + Cloth Config: shared libraries pulled in by the above.
+    localRuntime files('libs/devmods/Jade-1.21.1-NeoForge-15.10.6.jar')
+    localRuntime files('libs/devmods/JadeAddons-1.21.1-NeoForge-6.1.2.jar')
+    localRuntime files('libs/devmods/jei-1.21.1-neoforge-19.70.0.469.jar')
+    localRuntime files('libs/devmods/mezz_config-1.21.1-neoforge-0.7.1-standalone.jar')
+    localRuntime files('libs/devmods/mezz_config_gui-1.21.1-neoforge-mc1.21.1-0.5.5.jar')
+    localRuntime files('libs/devmods/architectury-13.0.12-neoforge.jar')
+    localRuntime files('libs/devmods/cloth-config-15.0.140-neoforge.jar')
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.4'

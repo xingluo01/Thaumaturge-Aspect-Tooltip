@@ -18,9 +18,10 @@ logs/
 *.log
 *.bak
 
-# Local development dependency jars (Thaumaturge 本体)。
-# 换机器需自行按 docs/LOCAL_DEPS.md 放置，不进 git。
+# Local development dependency jars (Thaumaturge 本体 + dev 测试套件)。
+# 换机器需自行按 docs/DEV_ENV.md 放置，不进 git。
 libs/*.jar
+libs/devmods/*.jar
 
 # 本机绝对路径索引与 dev 环境备注，换机器要改，不进 git。
 docs/LOCAL_DEPS.md
