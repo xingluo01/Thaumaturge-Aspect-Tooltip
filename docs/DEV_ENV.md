@@ -27,20 +27,44 @@ Thaumaturge 1.1.0 是 required 前置，缺它 tooltip 注入拿不到要素数�
 
 ### 测试套件（dev-only）
 
-放在 `libs/devmods/`，只挂 `localRuntime`，与测试清单 `docs/MANUAL_TEST.md` 的用例对应：
+放在 `libs/devmods/`，由一行 `localRuntime fileTree('libs/devmods') { include '*.jar' }`
+整体加载：**往目录里丢 jar 即生效，不用改 build.gradle**。
+版本与整合包一致，测试才反映玩家真实环境；名册如下（27 个 jar，69MB）：
 
-| mod | 版本 | 测试用途 |
+| modid | 版本 | 测试用途 |
 |---|---|---|
-| Jade | 15.10.6 | tooltip 增强，U7 与冲突回归的主目标 |
-| JadeAddons | 6.1.2 | Jade 附属（依赖 Jade） |
-| JEI | 19.70.0.469 | U7 容器 / 查看器内悬停 |
+| jade | 15.10.6 | tooltip 增强，U7 与冲突回归的主目标 |
+| jadeaddons | 6.1.2 | Jade 附属（依赖 Jade） |
+| jei | 19.70.0.469 | U7 容器 / 查看器内悬停 |
 | mezz_config | 0.7.1-standalone | JEI 19.70 的 required 前置 |
 | mezz_config_gui | 0.5.5 | JEI 的可选前置（配置界面） |
-| Architectury | 13.0.12 | 公共库 |
-| Cloth Config | 15.0.140 | 公共库 |
+| architectury | 13.0.12 | 公共库 |
+| cloth_config | 15.0.140 | 公共库 |
+| modernui | 3.13.0.1 | UI 库，Jade / FTB 系界面依赖 |
+| sodium | 0.8.13 | 渲染优化下验证 tooltip |
+| itemzoomer | 2.0.1 | 直接改 tooltip 呈现 |
+| jecharacters | 4.5.30 | JEI 拼音搜索，文本叠加 |
+| fusion | 1.3.16 | Connected Textures |
+| mod_menu | 1.0.2 | 模组列表界面 |
+| ftblibrary | 2101.1.39 | FTB 系界面库 |
+| kubejs | 2101.7.2 | 脚本环境，可动态改 tooltip 做对照 |
+| rhino | 2101.2.7 | KubeJS 的 JS 引擎 |
+| ae2jeiintegration | 1.2.1 | 扩展 JEI 配方类别 |
+| polymorph | 1.1.0 | 给物品附加提示，测 tooltip 叠加 |
+| ae2 | 19.2.19 | 大量带要素的物品样本 |
+| guideme | 21.1.22 | AE2 的指南书库与硬前置 |
+| ae2wtlib | 19.5.1 | AE2 无线终端 |
+| extendedae | 2.2.43 | 扩展样板供应器与磁盘 |
+| ae2omnicells | 1.1.6 | 大容量存储单元 |
+| curios | 9.5.1 | 饰品栏，tooltip 叠加常见场景 |
+| geckolib | 4.9.3 | 动画库，多 mod 前置 |
+| modernfix | 5.27.27 | 启动优化与诊断 |
+| spark | 1.10.124 | 性能采样，定位 tooltip 卡顿 |
 
-jar 从整合包 `mods/` 拷贝；本机源路径见不进 git 的 `docs/LOCAL_DEPS.md`。
-`sources` 里没有这些 mod，所以它们不影响编译；只影响 `runClient` 的加载列表。
+jar 来源：25 个从整合包 `mods/` 直接拷贝；`itemzoomer` 与 `mod_menu` 整合包无，
+分别从 Modrinth CDN（2.0.1-1.21.1）与 cursemaven（file id 7312908）下载。
+本机源路径见不进 git 的 `docs/LOCAL_DEPS.md`。
+这些 jar 不在 `sources` 里，不影响编译，只影响 `runClient` 的加载列表。
 
 **配置坑（已修，勿回退）**：MDG 的 `runClient` 走 `clientRuntimeClasspath`，它不会自动继承
 `localRuntime`。build.gradle 的 `configurations` 段必须显式
