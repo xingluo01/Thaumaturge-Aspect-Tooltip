@@ -78,7 +78,10 @@ Render thread）。后者与“进主菜单后严重卡顿”的时间点吻合�
 本模组 `thaumaturge_aspect_tooltip` 没有对应异常。
 
 要做定性结论，应在卡顿时执行 `/spark profiler` 采样。当前已停用通用汉化包，仅保留专项翻译包
-文件夹版；若主菜单仍卡，再依次 A/B GuideME / `ae2_pattern_disk`、KubeJS / Rhino。
+文件夹版，并在 `run/options.txt` 固定 `guiScale:3`，避免自动缩放触发 `res level: 2 to 4`。
+若主菜单仍卡，再把 `resourcePacks` 置空验证专项包，随后 A/B GuideME / `ae2_pattern_disk`、
+KubeJS / Rhino。ModernUI 自身也已按“只保留三项能力”收敛（见下方 ModernUI 配置一节），
+复测时可把它与资源包两个变量分开看。
 
 **仓库配置**：`repositories` 段为这些坐标加了 cursemaven、api.modrinth.com/maven、
 BlameJared、Latvian、JitPack、Shedaniel。本机 `maven.modrinth.com` 不通（TLS 连接被关闭），
@@ -126,6 +129,57 @@ dev client 会少加载对应 mod，但构建不会失败（前置 Thaumaturge �
 `gradle.properties` 的 `thaumaturge_version`、mods.toml 模板的 `versionRange`。
 升级测试套件时改 `build.gradle` 里对应的 `localRuntime` 坐标；
 只有 `libs/devmods-local/` 里的 9 个才需要改文件名。
+
+### ModernUI 配置（dev client，只保留三项能力）
+
+dev 环境只需要 ModernUI 的三项能力：**字体引擎**（TrueType/SDF 文本管线）、
+**平滑字体**（抗锯齿 + 线性度量）、**现代化 tooltip 框**。
+其余能力（GUI 模糊、界面动画、缩放键、emoji、加载提示音）在 dev 环境没有验证价值，
+全部关闭，顺带削掉主菜单与界面渲染的一批非必要开销。
+
+配置文件在 `run/config/ModernUI/`，随 `run/` 被 gitignore，换机器需重做。
+两个文件都有 `linearMetrics`，必须同时为 `true`，否则文本度量按不同规则计算。
+
+`text.toml`（保留项）：
+
+| 键 | 值 | 对应能力 |
+|---|---|---|
+| `allowAsyncLayout` | `true` | 布局在工作线程计算，不阻塞主线程 |
+| `smartSDFShaders` | `true` | 按设备空间像素密度在 SDF / 双线性间选择 |
+| `computeDeviceFontSize` | `true` | 2D 下按变换矩阵精确算字号，缩小文本仍清晰 |
+| `allowSDFTextIn2D` | `true` | 2D 允许走 SDF 文本 |
+| `antiAliasing` | `true` | 字形栅格抗锯齿（平滑字体） |
+| `linearMetrics` | `true` | 分数度量、无 hinting，线性缩放更平滑 |
+
+`text.toml`（关闭项）：
+
+| 键 | 值 | 关闭的能力 |
+|---|---|---|
+| `allowShadow` | `false` | 丢弃原版文本阴影，注释标注可提升性能 |
+| `useTextShadersInWorld` | `false` | 3D 世界仍走原版文本管线，规避光影/渲染 mod 冲突 |
+| `tweakExperienceText` | `false` | 改写经验等级文本描边，非必要 |
+
+`client.toml`：
+
+| 键 | 值 | 说明 |
+|---|---|---|
+| `[tooltip]` `enable` / `roundedShape` / `centerTitle` / `titleBreak` / `exactPositioning` | `true` | **保留**：现代化 tooltip 框 |
+| `[screen] animationDuration` | `0` | 关背景色与模糊半径过渡动画 |
+| `[screen] blurEffect` / `additionalBlurEffect` / `overrideVanillaBlur` | `false` | 关 GUI 高斯模糊，GPU 开销最大的一项 |
+| `[screen] blurRadius` | `0` | 卷积核半径归零 |
+| `[tooltip] borderCycleTime` | `0` | 关边框颜色循环 |
+| `[general] ding` | `false` | 关加载完成提示音 |
+| `[general] zoom` | `false` | 关 C 键缩放（OptiFine 同款，dev 不需要） |
+| `[general] useNewGuiScale` | `false` | 保留原版 GUI 缩放按钮，不改缩放判定路径 |
+| `[general] emojiShortcodes` | `false` | 关 Slack/Discord emoji 短码替换 |
+| `[font] useColorEmoji` | `false` | 关彩色 emoji，用灰度（更快） |
+| `[font] linearMetrics` | `true` | 与 `text.toml` 保持一致 |
+
+`[tooltip]` 的 `colorFill` / `colorStroke` / `borderWidth` / `cornerRadius` 保持默认；
+`shadowRadius` / `shadowOpacity` 配置注释明确标注不影响性能，不需要动。
+
+以上是静态配置收敛，未做启动验证（按约定不主动起客户端）。
+下次实机验证时重点看日志里 `res level` 抬升与 emoji 扫描是否消失。
 
 ## 常用命令
 
