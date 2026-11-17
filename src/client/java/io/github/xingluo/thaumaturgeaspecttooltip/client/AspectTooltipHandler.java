@@ -39,8 +39,14 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
  */
 @EventBusSubscriber(modid = ThaumaturgeAspectTooltip.MOD_ID, value = Dist.CLIENT)
 public final class AspectTooltipHandler {
-    /** 表头颜色，与本体 {@code AspectContainerTooltipHandler} 的 0xB59A6A 一致。 */
-    private static final int HEADER_COLOR = 0xB59A6A;
+    /** 表头颜色，与本体 {@code AspectContainerTooltipHandler} 的 11902681（#B59ED9）一致。 */
+    private static final int HEADER_COLOR = 0xB59ED9;
+
+    /**
+     * 要素行的缩进：本体用 {@code Component.literal("  ")} 起头，两个半角空格。
+     * 少了它，要素行会顶到表头左边，和本体那几类物品放一起看就不齐。
+     */
+    private static final String ASPECT_INDENT = "  ";
 
     /** 本体的文案键，直接复用：两种语言都已有译文，措辞与本体完全一致。 */
     private static final String HEADER_KEY = "tooltip.thaumaturge.aspects.header";
@@ -106,7 +112,7 @@ public final class AspectTooltipHandler {
         MutableComponent text = AspectKnowledgeAccess.isKnown(aspect)
                 ? Component.translatable(AMOUNT_KEY, AspectComponents.name(aspect), instance.amount())
                 : AspectComponents.name(aspect);
-        return Component.empty()
+        return Component.literal(ASPECT_INDENT)
                 .append(text)
                 .setStyle(Style.EMPTY.withColor(TextColor.fromRgb(aspect.value().color())));
     }

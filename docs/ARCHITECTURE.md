@@ -66,7 +66,9 @@
 - 监听 `ItemTooltipEvent`，优先级 `LOWEST`：本体与其它 mod 都是默认 NORMAL，先让它们写完
   再判断，否则本类先插入、本体随后再插一份，会出现两组要素行。
 - 插入位置与本体一致：表头插在索引 1（紧贴物品名），要素行依次排在后面，数量多的在前。
-- 颜色照抄本体：表头 `0xB59A6A`，要素行用 `IAspect.color()`，整行同色。
+- 颜色照抄本体：表头 `0xB59ED9`（十进制 11902681），要素行用 `IAspect.color()`，整行同色。
+- 缩进照抄本体：要素行以两个半角空格起头（`Component.literal("  ")`），表头不缩进。
+  少了这两个空格，本模组的行会顶到表头左边，和本体那几类物品并排看就不齐。
 - 文案直接复用本体键 `tooltip.thaumaturge.aspects.header`（「要素：」/「Aspects:」）与
   `tooltip.thaumaturge.amount`（`%s x%s`）。本体已带 zh_cn / en_us 译文，本模组不再自带语言文件，
   措辞与本体永远一致。
