@@ -9,10 +9,10 @@
 
 ## 开放环境 mod（dev runtime）
 
-dev client 加载的 mod 全部走本地 jar + `localRuntime`，不进成品 jar、不进 git。
-之所以不用公开 Maven 坐标：本机 maven.modrinth 不通、cursemaven 需逐条试 file id，
-而本地 jar 与整合包版本完全一致，手动测试才反映玩家真实环境（参考仓库 AE2-Pattern-Disk
-的 AECS 依赖也是这套本地 jar 做法）。
+dev client 加载的 mod 全部走 `localRuntime`，不进成品 jar、不进 git。
+**硬规则：有官方 Maven / CurseMaven / Modrinth 源的依赖必须用坐标声明，禁止把 jar 放进
+`libs/devmods-local/` 或从整合包拷贝。** 只有确认无可用官方坐标时才允许本地 jar，
+且必须在 `docs/LOCAL_DEPS.md` 登记版本、来源路径与哈希。
 
 ### 前置（必须）
 
@@ -25,13 +25,24 @@ Thaumaturge 1.1.0 是 required 前置，缺它 tooltip 注入拿不到要素数�
 | `clientCompileOnly files('libs/thaumaturge-...jar')` | client 源集编译期可见 |
 | `localRuntime files('libs/thaumaturge-...jar')` | dev client / server / data 运行期真正加载 |
 
+Thaumaturge 与 ExtendedAE 在 dev 环境还需要两个运行期前置，均有官方 Modrinth Maven 源，
+必须用坐标声明，不得从整合包拷 jar：
+
+| 前置 | 坐标 | 项目 ID / 版本 ID | 来源要求 |
+|---|---|---|---|
+| glodium | `maven.modrinth:glodium:1.21-2.2-neoforge` | `UhW5uCKw` / `pfbmdJ3b` | extendedae 要求 `>= 1.21-2.0-neoforge` |
+| lithostitched | `maven.modrinth:lithostitched:1.8.1-neoforge-21.1` | `XaDC71GB` / `cZu4cHY3` | thaumaturge 要求 `>= 1.8.0` |
+
+坐标解析出的 jar 与整合包文件 SHA-1 一致：glodium `9f61a3162665ad0b37f6f268339ac98097af1a87`，
+lithostitched `88cdded5b617e19b4d2676948b5550699de23578`。
+
 ### 测试套件（dev-only）
 
 **以 Maven 坐标声明为主**（`build.gradle` 的 `localRuntime '...'`），不用往仓库塞 jar。
 Coordinates 优先 CurseMaven，其余走 Modrinth（通过 `api.modrinth.com/maven`）、
 BlameJared（JEI）、Latvian（KubeJS/Rhino）。版本与整合包一致，测试才反映玩家真实环境。
 少数没有可用公开坐标的 mod 才放本地 jar 到 `libs/devmods-local/`（当前 9 个）。
-名册如下（41 个 mod：32 个坐标 + 9 个本地 jar）：
+名册如下（43 个 mod：34 个坐标 + 9 个本地 jar）：
 
 | modid | 版本 | 测试用途 |
 |---|---|---|
@@ -78,7 +89,8 @@ BlameJared（JEI）、Latvian（KubeJS/Rhino）。版本与整合包一致，测
 其余用 jar 的 SHA-1 在 Modrinth API 反查出精确版本坐标。
 9 个本地 jar（`ExtendedAE`、`ae2jeiintegration`、`automagia`、`classic_thaumonomicon`、
 `kubethaum`、`thaumaturge_tinkerer`、`thaumaturgeadditions`、`thaumictinkerer`、`thaumicbases`）
-没有可用公开坐标，仍从整合包拷贝。本机路径见不进 git 的 `docs/LOCAL_DEPS.md`。
+没有可用公开坐标，仍从整合包拷贝。
+本机路径见不进 git 的 `docs/LOCAL_DEPS.md`。
 这些依赖不在 `sources` 里，不影响编译，只影响 `runClient` 的加载列表。
 
 **仓库配置**：`repositories` 段为这些坐标加了 cursemaven、api.modrinth.com/maven、

@@ -168,6 +168,11 @@ dependencies {
     clientCompileOnly files('libs/thaumaturge-1.21.1-NeoForge-1.1.0.jar')
     localRuntime files('libs/thaumaturge-1.21.1-NeoForge-1.1.0.jar')
 
+    // Runtime prerequisites with official Modrinth Maven sources. Use coordinates,
+    // never local jars: glodium is required by extendedae, lithostitched by thaumaturge.
+    localRuntime 'maven.modrinth:glodium:1.21-2.2-neoforge'
+    localRuntime 'maven.modrinth:lithostitched:1.8.1-neoforge-21.1'
+
     // Dev-only test suite, declared by Maven coordinates (preferred) so no jars
     // need to be committed or copied by hand. Versions match the reference modpack.
     // See docs/DEV_ENV.md for the roster and source repositories.
