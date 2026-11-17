@@ -191,9 +191,7 @@ dependencies {
     localRuntime 'curse.maven:thaumic-tracker-1736726:9456926'
     localRuntime 'dev.latvian.mods:kubejs-neoforge:2101.7.2-build.381'
     localRuntime 'dev.latvian.mods:rhino:2101.2.7-build.85'
-    localRuntime 'maven.modrinth:ae2-lightning-tech:2.1.2'
     localRuntime 'maven.modrinth:ae2-omni-cells:1.1.6-1.21.1-neoforge'
-    localRuntime 'maven.modrinth:ae2lt-packaged-pattern-provider:1.2.2'
     localRuntime 'maven.modrinth:applied-energistics-2-wireless-terminals:19.5.1'
     localRuntime 'maven.modrinth:cloth-config:15.0.140+neoforge'
     localRuntime 'maven.modrinth:fusion-connected-textures:1.3.16-neoforge-mc1.21.1'
@@ -209,7 +207,6 @@ dependencies {
     localRuntime 'maven.modrinth:modernfix:5.27.27+mc1.21.1'
     localRuntime 'maven.modrinth:polymorph:VEburL70'
     localRuntime 'maven.modrinth:sodium:mc1.21.1-0.8.13-neoforge'
-    localRuntime 'maven.modrinth:thunderbolt-core:2.0.3'
     localRuntime 'mezz.jei:jei-1.21.1-neoforge:19.70.0.469'
 
     // A handful of mods are not published to a Maven reachable here;

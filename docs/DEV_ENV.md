@@ -50,11 +50,12 @@ BlameJared（JEI）、Latvian（KubeJS/Rhino）。版本与整合包一致，测
 | 公共库与脚本 | `architectury` 13.0.11、`cloth_config` 15.0.140、`curios` 9.5.1、`geckolib` 4.9.3、`ftblibrary` 2101.1.39、`modernui` 3.13.0.1、`kubejs` 2101.7.2、`rhino` 2101.2.7 | 公共库、UI 底座、脚本环境，可动态改 tooltip 做对照 |
 | 渲染、性能与诊断 | `sodium` 0.8.13、`fusion` 1.3.16、`modernfix` 5.27.27、`spark` 1.10.124、`mod_menu` 1.0.2 | 验证优化环境下的 tooltip，并用 spark 定位卡顿 |
 | Tooltip / JEI 验证 | `jade` 15.10.6、`jadeaddons` 6.1.2、`jei` 19.70.0.469、`jecharacters` 4.5.30、`itemzoomer` 2.0.1、`polymorph` 1.1.0 | tooltip 增强、文本叠加、拼音搜索与多结果提示的主要对照目标 |
-| AE2 样板与存储 | `ae2` 19.2.19、`ae2jeiintegration` 1.2.1、`ae2wtlib` 19.5.1、`extendedae` 2.2.43、`ae2omnicells` 1.1.6、`ae2_pattern_disk` 0.9.13、`ae2lt` 2.1.2、`ae2ltpp` 1.2.2、`thunderbolt` 2.0.3 | 大量带要素物品样本、样板/磁盘/无线终端场景 |
+| AE2 样板与存储 | `ae2` 19.2.19、`ae2jeiintegration` 1.2.1、`ae2wtlib` 19.5.1、`extendedae` 2.2.43、`ae2omnicells` 1.1.6、`ae2_pattern_disk` 0.9.13 | 大量带要素物品样本、样板/磁盘/无线终端场景 |
 | 神秘使附属 | `classic_thaumonomicon` 1.0.2、`kubethaum` 1.3.1、`thaumaturgeadditions` 1.2.1、`thaumictracker` 1.1、`automagia` 0.8.7、`thaumicbases` 3.6.023.5、`thaumaturge_tinkerer` 0.3、`thaumadditions` 0.18.26、`thaumictinkerer` 0.1.2-beta、`thaumicenergistics_ce` 2.7.5.4 | 全部依赖本体 `thaumaturge`；覆盖神秘使体系内的 tooltip 场景 |
 
-`ae2_pattern_disk`、`ae2lt`、`thunderbolt`、`ae2ltpp` 为整合包外补入的稳定版；
-版本取参考仓库 AE2-Pattern-Disk 验证过的值，不用更新的 beta。
+`ae2_pattern_disk` 为整合包外补入的稳定版，版本取参考仓库 AE2-Pattern-Disk 验证过的值。
+闪电科技三件（`ae2lt`、`ae2ltpp`、`thunderbolt`）已从 dev 环境移除，以排查主菜单卡顿；
+需要时再单独加回。
 
 坐标来源：主流 mod 由参考仓库 AE2-Pattern-Disk / TE4 验证过的 curse.maven 坐标声明；
 其余用 jar 的 SHA-1 在 Modrinth API 反查出精确版本坐标。
@@ -71,8 +72,7 @@ BlameJared（JEI）、Latvian（KubeJS/Rhino）。版本与整合包一致，测
 Render thread）。后者与“进主菜单后严重卡顿”的时间点吻合。
 
 首要嫌疑是 ModernUI 的字体/emoji 栈叠加两个汉化资源包：日志扫描 6923 个 emoji shortcode、
-3581 个 emoji map，并加载 Source Han Sans CN Medium 等 CJK 字体。GuideME / AE2LT /
-`ae2_pattern_disk` 的指南页索引冲突与图标缺失集中在 13:57:33，是次级嫌疑。
+3581 个 emoji map，并加载 Source Han Sans CN Medium 等 CJK 字体。GuideME / `ae2_pattern_disk` 的指南页索引冲突与图标缺失集中在 13:57:33，是次级嫌疑。
 本模组 `thaumaturge_aspect_tooltip` 没有对应异常。
 
 要做定性结论，应在卡顿时执行 `/spark profiler` 采样。A/B 排查先移除
