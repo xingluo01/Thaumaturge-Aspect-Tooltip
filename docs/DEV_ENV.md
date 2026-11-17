@@ -42,48 +42,19 @@ lithostitched `88cdded5b617e19b4d2676948b5550699de23578`。
 Coordinates 优先 CurseMaven，其余走 Modrinth（通过 `api.modrinth.com/maven`）、
 BlameJared（JEI）、Latvian（KubeJS/Rhino）。版本与整合包一致，测试才反映玩家真实环境。
 少数没有可用公开坐标的 mod 才放本地 jar 到 `libs/devmods-local/`（当前 9 个）。
-名册如下（43 个 mod：34 个坐标 + 9 个本地 jar）：
+名册按用途简单分组（版本以 `build.gradle` 为准；运行时另带入少量传递依赖）：
 
-| modid | 版本 | 测试用途 |
+| 分组 | modid（版本） | 用途 |
 |---|---|---|
-| jade | 15.10.6 | tooltip 增强，U7 与冲突回归的主目标 |
-| jadeaddons | 6.1.2 | Jade 附属（依赖 Jade） |
-| jei | 19.70.0.469 | U7 容器 / 查看器内悬停 |
-| mezz_config | 0.7.1-standalone | JEI 19.70 的 required 前置 |
-| mezz_config_gui | 0.5.5 | JEI 的可选前置（配置界面） |
-| architectury | 13.0.12 | 公共库 |
-| cloth_config | 15.0.140 | 公共库 |
-| modernui | 3.13.0.1 | UI 库，Jade / FTB 系界面依赖 |
-| sodium | 0.8.13 | 渲染优化下验证 tooltip |
-| itemzoomer | 2.0.1 | 直接改 tooltip 呈现 |
-| jecharacters | 4.5.30 | JEI 拼音搜索，文本叠加 |
-| fusion | 1.3.16 | Connected Textures |
-| mod_menu | 1.0.2 | 模组列表界面 |
-| ftblibrary | 2101.1.39 | FTB 系界面库 |
-| kubejs | 2101.7.2 | 脚本环境，可动态改 tooltip 做对照 |
-| rhino | 2101.2.7 | KubeJS 的 JS 引擎 |
-| ae2jeiintegration | 1.2.1 | 扩展 JEI 配方类别 |
-| polymorph | 1.1.0 | 给物品附加提示，测 tooltip 叠加 |
-| ae2 | 19.2.19 | 大量带要素的物品样本 |
-| guideme | 21.1.22 | AE2 的指南书库与硬前置 |
-| ae2wtlib | 19.5.1 | AE2 无线终端 |
-| extendedae | 2.2.43 | 扩展样板供应器与磁盘 |
-| ae2omnicells | 1.1.6 | 大容量存储单元 |
-| curios | 9.5.1 | 饰品栏，tooltip 叠加常见场景 |
-| geckolib | 4.9.3 | 动画库，多 mod 前置 |
-| modernfix | 5.27.27 | 启动优化与诊断 |
-| spark | 1.10.124 | 性能采样，定位 tooltip 卡顿 |
+| 本体与必需前置 | `thaumaturge` 1.1.0、`glodium` 1.21-2.2、`lithostitched` 1.8.1、`guideme` 21.1.22、`mezz_config` 0.7.1-standalone、`mezz_config_gui` 0.5.5、`ae2wtlib_api` 19.5.1 | 本模组前置与运行期硬依赖；本体 jar 在 `libs/` 根 |
+| 公共库与脚本 | `architectury` 13.0.11、`cloth_config` 15.0.140、`curios` 9.5.1、`geckolib` 4.9.3、`ftblibrary` 2101.1.39、`modernui` 3.13.0.1、`kubejs` 2101.7.2、`rhino` 2101.2.7 | 公共库、UI 底座、脚本环境，可动态改 tooltip 做对照 |
+| 渲染、性能与诊断 | `sodium` 0.8.13、`fusion` 1.3.16、`modernfix` 5.27.27、`spark` 1.10.124、`mod_menu` 1.0.2 | 验证优化环境下的 tooltip，并用 spark 定位卡顿 |
+| Tooltip / JEI 验证 | `jade` 15.10.6、`jadeaddons` 6.1.2、`jei` 19.70.0.469、`jecharacters` 4.5.30、`itemzoomer` 2.0.1、`polymorph` 1.1.0 | tooltip 增强、文本叠加、拼音搜索与多结果提示的主要对照目标 |
+| AE2 样板与存储 | `ae2` 19.2.19、`ae2jeiintegration` 1.2.1、`ae2wtlib` 19.5.1、`extendedae` 2.2.43、`ae2omnicells` 1.1.6、`ae2_pattern_disk` 0.9.13、`ae2lt` 2.1.2、`ae2ltpp` 1.2.2、`thunderbolt` 2.0.3 | 大量带要素物品样本、样板/磁盘/无线终端场景 |
+| 神秘使附属 | `classic_thaumonomicon` 1.0.2、`kubethaum` 1.3.1、`thaumaturgeadditions` 1.2.1、`thaumictracker` 1.1、`automagia` 0.8.7、`thaumicbases` 3.6.023.5、`thaumaturge_tinkerer` 0.3、`thaumadditions` 0.18.26、`thaumictinkerer` 0.1.2-beta、`thaumicenergistics_ce` 2.7.5.4 | 全部依赖本体 `thaumaturge`；覆盖神秘使体系内的 tooltip 场景 |
 
-**神秘使附属（10 个，整合包装有的全部纳入）**：`classic_thaumonomicon` 1.0.2、
-`kubethaum` 1.3.1、`thaumaturgeadditions` 1.2.1、`thaumictracker` 1.1、
-`automagia` 0.8.7、`thaumicbases` 3.6.023.5、`thaumaturge_tinkerer` 0.3、
-`thaumadditions` 0.18.26、`thaumictinkerer` 0.1.2-beta、`thaumicenergistics_ce` 2.7.5.4。
-全部依赖本体 `thaumaturge`（已在 `libs/` 根，compileOnly + localRuntime）。
-
-**样板磁盘与闪电科技（4 个）**：`ae2_pattern_disk` 0.9.13（整合包 jar）；
-`ae2lt` 2.1.2 + `thunderbolt` 2.0.3 + `ae2ltpp` 1.2.2（整合包无，从 Modrinth CDN 下载，
-版本取参考仓库 AE2-Pattern-Disk 验证过的稳定版，不用更新的 beta）。
-`ae2lt` 的必需前置 `ae2wtlib_api` 与 `thunderbolt` 均已就位。
+`ae2_pattern_disk`、`ae2lt`、`thunderbolt`、`ae2ltpp` 为整合包外补入的稳定版；
+版本取参考仓库 AE2-Pattern-Disk 验证过的值，不用更新的 beta。
 
 坐标来源：主流 mod 由参考仓库 AE2-Pattern-Disk / TE4 验证过的 curse.maven 坐标声明；
 其余用 jar 的 SHA-1 在 Modrinth API 反查出精确版本坐标。
@@ -92,6 +63,20 @@ BlameJared（JEI）、Latvian（KubeJS/Rhino）。版本与整合包一致，测
 没有可用公开坐标，仍从整合包拷贝。
 本机路径见不进 git 的 `docs/LOCAL_DEPS.md`。
 这些依赖不在 `sources` 里，不影响编译，只影响 `runClient` 的加载列表。
+
+### 主菜单卡顿排查线索（2026-11-17）
+
+`run/logs/latest.log` 显示两段 16 秒级停顿：资源重载/纹理图集烘焙（约 16.6s，到
+`signs.png-atlas`）与进入主菜单后 ModernUI 文本布局引擎 `res level: 2 to 4`（约 16.2s，
+Render thread）。后者与“进主菜单后严重卡顿”的时间点吻合。
+
+首要嫌疑是 ModernUI 的字体/emoji 栈叠加两个汉化资源包：日志扫描 6923 个 emoji shortcode、
+3581 个 emoji map，并加载 Source Han Sans CN Medium 等 CJK 字体。GuideME / AE2LT /
+`ae2_pattern_disk` 的指南页索引冲突与图标缺失集中在 13:57:33，是次级嫌疑。
+本模组 `thaumaturge_aspect_tooltip` 没有对应异常。
+
+要做定性结论，应在卡顿时执行 `/spark profiler` 采样。A/B 排查先移除
+`run/resourcepacks/` 下两个汉化包，再观察 ModernUI 文本引擎重载是否仍卡。
 
 **仓库配置**：`repositories` 段为这些坐标加了 cursemaven、api.modrinth.com/maven、
 BlameJared、Latvian、JitPack、Shedaniel。本机 `maven.modrinth.com` 不通（TLS 连接被关闭），
