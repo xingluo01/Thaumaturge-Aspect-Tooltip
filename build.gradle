@@ -204,7 +204,13 @@ dependencies {
     localRuntime 'maven.modrinth:mod-menu-neoforge-edition:1.0.2'
     localRuntime 'maven.modrinth:modernfix:5.27.27+mc1.21.1'
     localRuntime 'maven.modrinth:polymorph:VEburL70'
-    localRuntime 'maven.modrinth:sodium:mc1.21.1-0.8.13-neoforge'
+    // Sodium 0.8.x publishes a JarJar *wrapper* on Modrinth Maven: the outer jar only holds
+    // pre-launch checks plus META-INF/jarjar/net.caffeinemc.sodium-neoforge-...-mod.jar and
+    // has no assets. Passed in as a classpath mod, JarJar resolves the embedded dependency to
+    // that same wrapper ("passed in as source: sodium"), so the real jar is never extracted:
+    // the mod shows up in the Mod List but has no mixins, no assets and no config file.
+    // 0.6.13 is a self-contained jar (mixins and assets at the root), so use it instead.
+    localRuntime 'maven.modrinth:sodium:mc1.21.1-0.6.13-neoforge'
     localRuntime 'mezz.jei:jei-1.21.1-neoforge:19.70.0.469'
 
     // A handful of mods are not published to a Maven reachable here. Only the listed

@@ -48,7 +48,7 @@ BlameJared（JEI）、Latvian（KubeJS/Rhino）。版本与整合包一致，测
 |---|---|---|
 | 本体与必需前置 | `thaumaturge` 1.1.0、`glodium` 1.21-2.2、`lithostitched` 1.8.1、`guideme` 21.1.22、`mezz_config` 0.7.1-standalone、`mezz_config_gui` 0.5.5、`ae2wtlib_api` 19.5.1 | 本模组前置与运行期硬依赖；本体 jar 在 `libs/` 根 |
 | 公共库与脚本 | `architectury` 13.0.11、`cloth_config` 15.0.140、`curios` 9.5.1、`geckolib` 4.9.3、`ftblibrary` 2101.1.39、`modernui` 3.13.0.1、`kubejs` 2101.7.2、`rhino` 2101.2.7 | 公共库、UI 底座、脚本环境，可动态改 tooltip 做对照 |
-| 渲染、性能与诊断 | `sodium` 0.8.13、`fusion` 1.3.16、`modernfix` 5.27.27、`spark` 1.10.124、`mod_menu` 1.0.2 | 验证优化环境下的 tooltip，并用 spark 定位卡顿 |
+| 渲染、性能与诊断 | `sodium` 0.6.13、`fusion` 1.3.16、`modernfix` 5.27.27、`spark` 1.10.124、`mod_menu` 1.0.2 | 验证优化环境下的 tooltip，并用 spark 定位卡顿 |
 | Tooltip / JEI 验证 | `jade` 15.10.6、`jadeaddons` 6.1.2、`jei` 19.70.0.469、`jecharacters` 4.5.30、`itemzoomer` 2.0.1、`polymorph` 1.1.0 | tooltip 增强、文本叠加、拼音搜索与多结果提示的主要对照目标 |
 | AE2 样板与存储 | `ae2` 19.2.19、`ae2jeiintegration` 1.2.1、`ae2wtlib` 19.5.1、`extendedae` 2.2.43、`ae2omnicells` 1.1.6、`ae2_pattern_disk` 0.9.13 | 大量带要素物品样本、样板/磁盘/无线终端场景 |
 | 神秘使附属（保留 3 个） | `thaumicenergistics_ce` 2.7.5.4、`thaumicbases` 3.6.023.5、`thaumaturge_tinkerer` 0.3 | 源质接入 AE2、泛用内容扩展、Tinkerer 移植；其余附属已禁用 |
@@ -83,6 +83,11 @@ Render thread）。后者与“进主菜单后严重卡顿”的时间点吻合�
 KubeJS / Rhino。ModernUI 自身也已按“只保留三项能力”收敛（见下方 ModernUI 配置一节），
 复测时可把它与资源包两个变量分开看。
 
+**2026-11-17 15:15 复测结果**：`res level` 全程停在 `2 to 2`（退出世界回标题时一次 `2 to 3`），
+`2 to 4` 未再出现——guiScale 推断成立。但资源重载仍要 33–41s，大头是纹理图集烘焙
+（blocks → signs 9–12s，armor_trims → decorated_pot 6–12s）；这台机器是 Intel HD Graphics
+Gen11 核显，属固有开销，与字体等级无关。
+
 **仓库配置**：`repositories` 段为这些坐标加了 cursemaven、api.modrinth.com/maven、
 BlameJared、Latvian、JitPack、Shedaniel。本机 `maven.modrinth.com` 不通（TLS 连接被关闭），
 故用 `api.modrinth.com/maven` 提供同一 `maven.modrinth` group，不要改回旧域名。
@@ -98,6 +103,17 @@ BlameJared、Latvian、JitPack、Shedaniel。本机 `maven.modrinth.com` 不通�
 
 参考仓库 AE2-Pattern-Disk 的 `build.gradle:372-374` 明确记录了 JECharacters 的同类陷阱；
 当前 `build.gradle` 也加了对应注释。
+
+**JarJar wrapper 陷阱（Sodium 0.8.x）**：Modrinth Maven 上的
+`sodium:mc1.21.1-0.8.13-neoforge` 只是个壳——外层仅 72 个预启动检查类加 `META-INF/jarjar/`
+（内层真 mod + 4 个 FFAPI 模块），本身 **0 个 assets**。作为 classpath mod 传入时，JarJar 把
+内层依赖解析成这个壳自己（日志：`passed in as source: sodium. Using Mod File:
+...sodium-mc1.21.1-0.8.13-neoforge.jar`），真 jar 从不解包：Mod List 里有 Sodium，但没有
+mixin、没有资源包、不生成 `sodium-options.json`，等于没装。
+
+判据：一次资源重载的 51 个包里，只有 `minecraft` 和 `sodium` 没有对应的 `mod/<id>` 条目，
+而 Sodium 真 jar 自带 80+ 个 assets 条目。改用自包含的 `mc1.21.1-0.6.13-neoforge`
+（576 个类、80 个 assets、mixin 配置在 jar 根、同样要求 neoforge `[21.1.82,)`）即可。
 
 **NeoForge 基线已升到 21.1.265**：`thaumicbases` 声明 `neoforge [21.1.265,)`，
 低于此版本 FML 会拒绝加载。21.1.265 也是整合包实例实际使用的版本
@@ -200,3 +216,28 @@ Windows 可直接双击 `run_client.bat`（本地脚本，不进 git）。
   检查 `neoForge.runs` 是否把 `localRuntime` 接进 `runtimeClasspath`（build.gradle 的 configurations 段）。
 - **配置缓存报警**：本仓库未启用 configuration cache；若从参考仓库抄脚本时开启了，
   run 脚本可加 `--no-configuration-cache`。
+
+## 日志噪声基线
+
+一次正常启动稳定产出约 100 条 `ERROR`、70+ 条 `WARN`，全部来自其他 mod；
+本模组 `thaumaturge_aspect_tooltip` 没有对应条目。先对照下表，别按条数判断环境坏了。
+
+| 来源 | 量 | 内容 | 是否要处理 |
+|---|---|---|---|
+| `ftblibrary.icon.EntityIconLoader` | 每次重载 38 条 | `Missing entity icon settings for thaumaturge:*` | 否。FTB Library 为任务/队伍 UI 扫描全部实体，没配图标就记 ERROR |
+| `guideme.internal.util.NavigationUtil` | 4 页 × 3 轮 | `Couldn't find icon ae2_pattern_disk:*_pattern_disk_provider` | 否。`ae2_pattern_disk` 的指南页引用了本版本不存在的物品 |
+| `net.minecraft.Util` | 3 条 | `Invalid path in pack: .../README.md`、`.../OFL.txt` | 否。资源包里混入非资源文件，加载器跳过 |
+| `world.level.storage.loot.LootDataType` | 4 条 | `Unknown registry key ...` | 否。`ae2_pattern_disk` 三个 provider 与 `extendedae:ex_emc_interface` 的战利品表无条件打包，方块按可选依赖条件注册 |
+
+配套 `WARN` 也基本固定：`mixin` 探测不存在的兼容目标 25 条（Create / FunctionalStorage /
+AdvancedAE / AE2LT / JEI 内部类）、`ItemIndex` 指南页引用未知物品 14 条、`ModelBakery` 缺
+ModernUI 的 `project_builder*` 模型 3 条、`SoundEngine` 缺山羊角音效 2 条、`Commands` 传送
+参数歧义 5 条（原版自带）。`JarSelector` 的 `passed in as source` **不是跳过**，是说明该 jar
+已由 Gradle 直接提供、JarJar 不必再解包内嵌副本。
+
+**tooltip 对照的混淆变量**：`better-advanced-tooltips` 是 KubeJS 的硬依赖（JiJ），会在每个
+物品 tooltip 追加 fuel / tag / component 行。做要素 tooltip 对照前，把
+`run/config/better-advanced-tooltips-client.toml` 的 `fuel_tooltip`、`tag_tooltip`、
+`component_tooltip` 置 `false`。
+
+`ae2lt` 已移除，`run/config/ae2lt-*.toml` 是残留文件，可删，不影响加载。
