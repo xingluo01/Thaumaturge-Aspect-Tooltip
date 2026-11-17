@@ -71,12 +71,13 @@ BlameJared（JEI）、Latvian（KubeJS/Rhino）。版本与整合包一致，测
 `signs.png-atlas`）与进入主菜单后 ModernUI 文本布局引擎 `res level: 2 to 4`（约 16.2s，
 Render thread）。后者与“进主菜单后严重卡顿”的时间点吻合。
 
-首要嫌疑是 ModernUI 的字体/emoji 栈叠加两个汉化资源包：日志扫描 6923 个 emoji shortcode、
-3581 个 emoji map，并加载 Source Han Sans CN Medium 等 CJK 字体。GuideME / `ae2_pattern_disk` 的指南页索引冲突与图标缺失集中在 13:57:33，是次级嫌疑。
+首要嫌疑是 ModernUI 的字体/emoji 栈叠加当时启用的两个汉化资源包：日志扫描 6923 个 emoji shortcode、
+3581 个 emoji map，并加载 Source Han Sans CN Medium 等 CJK 字体。GuideME / `ae2_pattern_disk` 的
+指南页索引冲突与图标缺失集中在 13:57:33，是次级嫌疑。
 本模组 `thaumaturge_aspect_tooltip` 没有对应异常。
 
-要做定性结论，应在卡顿时执行 `/spark profiler` 采样。A/B 排查先移除
-`run/resourcepacks/` 下两个汉化包，再观察 ModernUI 文本引擎重载是否仍卡。
+要做定性结论，应在卡顿时执行 `/spark profiler` 采样。当前已停用通用汉化包，仅保留专项翻译包
+文件夹版；若主菜单仍卡，再依次 A/B GuideME / `ae2_pattern_disk`、KubeJS / Rhino。
 
 **仓库配置**：`repositories` 段为这些坐标加了 cursemaven、api.modrinth.com/maven、
 BlameJared、Latvian、JitPack、Shedaniel。本机 `maven.modrinth.com` 不通（TLS 连接被关闭），
@@ -100,14 +101,15 @@ BlameJared、Latvian、JitPack、Shedaniel。本机 `maven.modrinth.com` 不通�
 
 ### 汉化资源包（dev client）
 
-不走 `localRuntime`，放在 `run/resourcepacks/`，由 `run/options.txt` 的 `resourcePacks` 行启用：
+不走 `localRuntime`，放在 `run/resourcepacks/`，由 `run/options.txt` 的 `resourcePacks` 行启用。
+当前只启用专项翻译包文件夹版；通用包 `Minecraft-Mod-Language-Modpack-Converted-1.21.1.zip`
+留在目录中但不在启用列表，不参与加载。
 
 | 包 | 作用 |
 |---|---|
-| `Minecraft-Mod-Language-Modpack-Converted-1.21.1.zip` | 通用 mod 中文层，在前 |
-| `Extra Mods ZH_CH.zip` | 本机补充汉化（17 个命名空间），在后覆盖 |
+| `Extra Mods ZH_CH/` | 本机补充汉化（17 个命名空间），文件夹版 |
 
-`run/` 被 gitignore，换机器需重新放置这两个 zip 与 options.txt，
+`run/` 被 gitignore，换机器需重新放置该文件夹与 options.txt，
 步骤见 `docs/LOCAL_DEPS.md`。本仓库的要素文案本地化（zh_cn/en_us）仍需按 `docs/TODO.md` 实现。
 
 **配置坑（已修，勿回退）**：MDG 的 `runClient` 走 `clientRuntimeClasspath`，它不会自动继承
