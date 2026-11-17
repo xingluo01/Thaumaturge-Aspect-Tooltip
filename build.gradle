@@ -1,0 +1,144 @@
+plugins {
+    id 'java-library'
+    id 'idea'
+    id 'maven-publish'
+    alias libs.plugins.modDevGradle
+}
+
+version = mod_version
+group = mod_group_id
+
+base {
+    archivesName = mod_id
+}
+
+// NeoForge 1.21.1 ships Java 21 to end users.
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+}
+
+sourceSets {
+    // Client-only tooltip code lives in its own source set so common/server code
+    // can never accidentally reference client classes.
+    client {
+        compileClasspath += main.output + main.compileClasspath
+        runtimeClasspath += main.output + main.runtimeClasspath
+    }
+    test {
+        compileClasspath += main.output + main.compileClasspath
+        runtimeClasspath += main.output + main.runtimeClasspath
+    }
+}
+
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+    clientRuntimeClasspath.extendsFrom clientLocalRuntime
+    testRuntimeClasspath.extendsFrom testLocalRuntime
+}
+
+neoForge {
+    version = libs.versions.neoForge.get()
+
+    parchment {
+        minecraftVersion = libs.versions.minecraft.get()
+        mappingsVersion = libs.versions.parchment.get()
+    }
+
+    addModdingDependenciesTo(sourceSets.client)
+    addModdingDependenciesTo(sourceSets.test)
+
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+            sourceSet(sourceSets.client)
+            sourceSet(sourceSets.test)
+        }
+    }
+
+    runs {
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            systemProperty 'forge.logging.console.level', 'debug'
+            logLevel = org.slf4j.event.Level.INFO
+        }
+
+        client {
+            client()
+            sourceSet = sourceSets.client
+            ideName = 'Client'
+        }
+
+        server {
+            server()
+            ideName = 'Server'
+            programArguments.addAll '--nogui'
+        }
+
+        data {
+            data()
+            sourceSet = sourceSets.main
+            ideName = 'Data Generation'
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').absolutePath, '--existing', file('src/main/resources/').absolutePath
+        }
+    }
+}
+
+// The default Java component only contains sourceSets.main. Merge the client
+// source set into the distributable jar.
+tasks.named('jar', Jar) {
+    dependsOn sourceSets.client.classesTaskName
+    from sourceSets.client.output
+    from('LICENSE') { into 'META-INF' }
+}
+
+tasks.matching { it.name == 'remapJar' }.configureEach {
+    dependsOn sourceSets.client.classesTaskName
+}
+
+// Generate mods.toml from the template before resources are processed.
+var generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
+    var replaceProperties = [
+        minecraft_version       : minecraft_version,
+        minecraft_version_range : minecraft_version_range,
+        neo_version             : neo_version,
+        neo_version_range       : neo_version_range,
+        loader_version_range    : loader_version_range,
+        mod_id                  : mod_id,
+        mod_name                : mod_name,
+        mod_license             : mod_license,
+        mod_version             : mod_version,
+        mod_authors             : mod_authors,
+        mod_description         : mod_description,
+        thaumaturge_version     : thaumaturge_version,
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from 'src/main/templates'
+    into 'build/generated/sources/modMetadata'
+}
+
+sourceSets.main.resources.srcDir generateModMetadata
+
+tasks.named('processResources', ProcessResources) {
+    dependsOn generateModMetadata
+}
+
+dependencies {
+    // Thaumaturge: the API classes are needed at compile time to read aspects from
+    // item stacks; the dev runtime loads the same jar so the client can actually boot.
+    // The jar is a local file in libs/ (not tracked by git) - see docs/LOCAL_DEPS.md.
+    compileOnly files('libs/thaumaturge-1.21.1-NeoForge-1.1.0.jar')
+    clientCompileOnly files('libs/thaumaturge-1.21.1-NeoForge-1.1.0.jar')
+    localRuntime files('libs/thaumaturge-1.21.1-NeoForge-1.1.0.jar')
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.4'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}

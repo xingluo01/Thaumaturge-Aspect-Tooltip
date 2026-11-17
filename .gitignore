@@ -1,0 +1,36 @@
+# Gradle / build
+build/
+.gradle/
+run/
+out/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local
+logs/
+*.log
+*.bak
+
+# Local development dependency jars (Thaumaturge 本体)。
+# 换机器需自行按 docs/LOCAL_DEPS.md 放置，不进 git。
+libs/*.jar
+
+# 本机绝对路径索引与 dev 环境备注，换机器要改，不进 git。
+docs/LOCAL_DEPS.md
+
+# 工具会话数据
+.pi/
+.qoder/
+.workbuddy/
+.workbuddy-ai/
+
+# 玩家本地启动脚本（若含个人路径）
+run_client.bat
+client_run_*.txt

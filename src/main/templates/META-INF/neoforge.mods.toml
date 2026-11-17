@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "${mod_name}"
+authors = "${mod_authors}"
+description = '''${mod_description}'''
+# icon.png 待补，见 docs/TODO.md
+# logoFile = "icon.png"
+
+[[dependencies.${mod_id}]]
+    modId = "neoforge"
+    type = "required"
+    versionRange = "${neo_version_range}"
+    ordering = "NONE"
+    side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+    modId = "minecraft"
+    type = "required"
+    versionRange = "${minecraft_version_range}"
+    ordering = "NONE"
+    side = "CLIENT"
+
+# 本模组读取 Thaumaturge 的要素 API，缺它无法工作，故为 required。
+# 下限同步 gradle.properties 的 thaumaturge_version。
+[[dependencies.${mod_id}]]
+    modId = "thaumaturge"
+    type = "required"
+    versionRange = "[${thaumaturge_version},)"
+    ordering = "AFTER"
+    side = "CLIENT"
