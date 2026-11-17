@@ -94,11 +94,14 @@ public final class AspectTooltipHandler {
             return;
         }
 
-        // 与本体相同的位置：紧贴物品名，数量多的排前面。
+        // 位置与本体一致：紧贴物品名。
+        // 排序跟图形 Chip 走（sortedByAmount()，数量降序），不跟本体的文本行：
+        // 本体文本用的是 sortedByAmount().reversed()，与 Chip 正好相反，
+        // 同一个物品先看文本再按 Shift 看图标会觉得顺序翻了。
         int at = Math.min(1, lines.size());
         lines.add(at++, Component.translatable(HEADER_KEY)
                 .withStyle(style -> style.withColor(TextColor.fromRgb(HEADER_COLOR))));
-        for (AspectInstance instance : aspects.sortedByAmount().reversed()) {
+        for (AspectInstance instance : aspects.sortedByAmount()) {
             lines.add(at++, aspectLine(instance));
         }
     }
