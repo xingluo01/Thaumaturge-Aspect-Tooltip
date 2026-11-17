@@ -88,6 +88,23 @@ KubeJS / Rhino。ModernUI 自身也已按“只保留三项能力”收敛（见
 （blocks → signs 9–12s，armor_trims → decorated_pot 6–12s）；这台机器是 Intel HD Graphics
 Gen11 核显，属固有开销，与字体等级无关。
 
+**结论（2026-11-17 15:35）**：卡顿主因是渲染路径，既不是资源包也不是本模组。
+上一轮 Sodium 因 JarJar 壳问题实际没生效（见「JarJar wrapper 陷阱」），客户端跑的是
+纯原版渲染器 + 45 个 mod 的渲染钩子。换 0.6.13 生效后主菜单卡顿消失，实测：
+
+| 阶段 | 无 Sodium | 有 Sodium |
+|---|---|---|
+| blocks → signs 图集 | 8.7s / 9.2s | 7.9s |
+| armor_trims → decorated_pot | 5.7s / 12.2s | 0.56s |
+| banner_patterns | 2.0s | 0.01s |
+| 整轮资源重载 | 32.7s / 41.0s | 29.7s |
+
+原因：主菜单不是静态图，而是大量 immediate-mode 四边形（全景、按钮、文字、tooltip）。
+Sodium 注入了 `BufferBuilder` intrinsics、20 字节紧凑顶点格式、`TextureAtlas` 上传路径与
+`BakedGlyph` 字形路径（见 `sodium-common.mixins.json`）。这台机器是 Intel HD Gen11 核显，
+没有独立显存，原版路径把 CPU 拖在同一条内存总线上，帧时间尖峰就表现为卡顿。
+`/spark profiler` 采样暂时不必做了，除非后续再出现卡顿。
+
 **仓库配置**：`repositories` 段为这些坐标加了 cursemaven、api.modrinth.com/maven、
 BlameJared、Latvian、JitPack、Shedaniel。本机 `maven.modrinth.com` 不通（TLS 连接被关闭），
 故用 `api.modrinth.com/maven` 提供同一 `maven.modrinth` group，不要改回旧域名。
