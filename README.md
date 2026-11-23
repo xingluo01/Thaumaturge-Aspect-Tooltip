@@ -1,4 +1,4 @@
-# Thaumaturge Aspect Tooltip
+# Thaumaturge Tooltip Plus
 
 Minecraft 1.21.1 / NeoForge 客户端附属模组。给「有要素数据、但原版 tooltip 没有文本要素行」的物品，
 在 tooltip 上补一行文本要素显示。

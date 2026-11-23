@@ -11,7 +11,7 @@
 
 ## 二、启动检查
 
-- [ ] 模组列表里出现「Thaumaturge Aspect Tooltip」，无红字、无加载错误。
+- [ ] 模组列表里出现「Thaumaturge Tooltip Plus」，无红字、无加载错误。
 - [ ] 日志无 `thaumaturge_aspect_tooltip` 相关的异常栈。
 - [ ] 原版物品 tooltip 正常，没有被本模组改动。
 

@@ -9,7 +9,8 @@ version = mod_version
 group = mod_group_id
 
 base {
-    archivesName = mod_id
+    // jar 文件名跟随显示名；modId 保持稳定，两者不一致是刻意为之。
+    archivesName = 'thaumaturge_tooltip_plus'
 }
 
 // Repositories for dev-only test mods declared by Maven coordinates below.

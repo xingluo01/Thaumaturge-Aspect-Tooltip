@@ -4,7 +4,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 
 /**
- * Thaumaturge Aspect Tooltip 的公共入口。
+ * Thaumaturge Tooltip Plus 的公共入口。
  *
  * <p>本模组是纯客户端功能：tooltip 注入全部位于 client 源集，
  * 这里只保留一个空的 mod 容器，供 NeoForge 识别 modId。

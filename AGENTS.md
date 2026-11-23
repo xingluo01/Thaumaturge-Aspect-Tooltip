@@ -5,7 +5,7 @@
 
 ## 这是什么
 
-Thaumaturge Aspect Tooltip，Minecraft 1.21.1 / NeoForge 客户端附属模组。
+Thaumaturge Tooltip Plus，Minecraft 1.21.1 / NeoForge 客户端附属模组。
 为「有要素数据、但原版 tooltip 没有文本要素行」的物品，在 tooltip 上补一行文本要素显示。
 依赖 Thaumaturge 本体的要素 API；Shift 触发的图形 Chip 版由本体负责，本模组不碰。
 

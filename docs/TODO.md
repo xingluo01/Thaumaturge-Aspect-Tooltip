@@ -13,4 +13,3 @@
 
 - [ ] 接 GitHub Release CI（照 `docs/RELEASE.md`）。
 - [ ] Modrinth / CurseForge 项目页与依赖声明。
-- [ ] 图标 `icon.png`（mods.toml 的 `logoFile` 目前注释掉）。

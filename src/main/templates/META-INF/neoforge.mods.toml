@@ -8,8 +8,7 @@ version = "${mod_version}"
 displayName = "${mod_name}"
 authors = "${mod_authors}"
 description = '''${mod_description}'''
-# icon.png 待补，见 docs/TODO.md
-# logoFile = "icon.png"
+logoFile = "logo.png"
 
 [[dependencies.${mod_id}]]
     modId = "neoforge"

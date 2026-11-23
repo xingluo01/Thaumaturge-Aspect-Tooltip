@@ -8,7 +8,7 @@
 1. 把 `CHANGELOG_UNRELEASED.md` 里 `## [未发布]` 整段搬到 `CHANGELOG.md` 顶部，
    标题改成 `## [<版本>] - <YYYY-MM-DD>`（细则见 `CHANGELOG_STYLE.md` 第一节）。
 2. `gradle.properties` 的 `mod_version` 改成同一个版本号。
-3. `./gradlew build`，产出 `build/libs/thaumaturge_aspect_tooltip-<版本>.jar`。
+3. `./gradlew build`，产出 `build/libs/thaumaturge_tooltip_plus-<版本>.jar`。
 4. `git tag vX.Y.Z && git push origin vX.Y.Z`。
 5. 上传产物到 Modrinth / CurseForge，贴 `CHANGELOG.md` 里对应版本段作说明。
 
