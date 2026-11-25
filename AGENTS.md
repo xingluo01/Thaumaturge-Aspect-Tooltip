@@ -36,7 +36,7 @@ Thaumaturge Tooltip Plus，Minecraft 1.21.1 / NeoForge 客户端附属模组。
 - **不改本体行为**：只追加缺失的文本行，不覆盖、不隐藏 Thaumaturge 原生的任何 tooltip 内容。
   原生已有文本行时必须跳过，避免重复。Shift 图形版一律交给本体。
 - **数据来源**：要素只能经 Thaumaturge 的 `api.aspect` 包读取，不反射内部实现、不复制要素表。
-  该包名与调用方式见 `docs/ARCHITECTURE.md`，实际签名以 `libs/` 里的 jar 为准。
+  该包名与调用方式见 `docs/ARCHITECTURE.md`，实际签名以 `build.gradle` 声明的当前版本 Thaumaturge 构件为准。
 - **依赖来源**：dev 运行期依赖只要有官方 Maven / CurseMaven / Modrinth 源，就必须用坐标声明，
   禁止把 jar 放进 `libs/devmods-local/` 或从整合包拷贝。只有确认无可用官方坐标时才允许本地 jar，
   并在 `docs/LOCAL_DEPS.md` 登记版本、来源路径与哈希。
@@ -52,7 +52,7 @@ Thaumaturge Tooltip Plus，Minecraft 1.21.1 / NeoForge 客户端附属模组。
 ```bash
 ./gradlew build              # 全量构建
 ./gradlew compileJava        # 只编 main
-./gradlew runClient          # 实机验证（需先在 libs/ 放好 Thaumaturge jar）
+./gradlew runClient          # 实机验证（Thaumaturge 等前置由 Maven 坐标自动拉取）
 ```
 
 Windows 下可直接双击 `run_client.bat`（本地脚本，不进 git）。
@@ -60,5 +60,5 @@ Windows 下可直接双击 `run_client.bat`（本地脚本，不进 git）。
 ## 四、读上游与依赖源码之前
 
 - 先确认版本：`gradle/libs.versions.toml` 与 `gradle.properties` 是唯一事实源。
-- 读 Thaumaturge 的 API 时，以 `libs/` 里当前版本 jar 为准；不要用其他版本或其他重制核心的类做结论。
+- 读 Thaumaturge 的 API 时，以 `build.gradle` 声明的当前版本构件（`curse.maven:thaumaturge-1628024:9452543`）为准；不要用其他版本或其他重制核心的类做结论。
 - 本仓库只认 `thaumaturge` 这个 modid 的要素体系，不兼容其他神秘重制核心（三花、Thavma、Thaumon 等）。

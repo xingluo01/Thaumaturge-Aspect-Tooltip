@@ -2,6 +2,8 @@ plugins {
     id 'java-library'
     id 'idea'
     id 'maven-publish'
+    // Modrinth 发布。日常构建不受影响，只有带 MODRINTH_TOKEN 的环境（CI 的 release job）才跑 modrinth 任务。
+    id 'com.modrinth.minotaur' version '2.9.0'
     alias libs.plugins.modDevGradle
 }
 
@@ -162,12 +164,12 @@ tasks.named('processResources', ProcessResources) {
 }
 
 dependencies {
-    // Thaumaturge: the API classes are needed at compile time to read aspects from
-    // item stacks; the dev runtime loads the same jar so the client can actually boot.
-    // The jar is a local file in libs/ (not tracked by git) - see docs/LOCAL_DEPS.md.
-    compileOnly files('libs/thaumaturge-1.21.1-NeoForge-1.1.0.jar')
-    clientCompileOnly files('libs/thaumaturge-1.21.1-NeoForge-1.1.0.jar')
-    localRuntime files('libs/thaumaturge-1.21.1-NeoForge-1.1.0.jar')
+    // Thaumaturge 1.1.0 (NeoForge 1.21.1): 编译期读取要素 API，dev 运行期加载本体。
+    // 官方 CurseForge 项目 1628024 / File 9452543（与本地 jar 字节数 33,840,402 一致），
+    // 直接走 CurseMaven 坐标，CI 与本地无需手工拷贝本地 jar。
+    compileOnly 'curse.maven:thaumaturge-1628024:9452543'
+    clientCompileOnly 'curse.maven:thaumaturge-1628024:9452543'
+    localRuntime 'curse.maven:thaumaturge-1628024:9452543'
 
     // Runtime prerequisites with official Modrinth Maven sources. Use coordinates,
     // never local jars: glodium is required by extendedae, lithostitched by thaumaturge.
@@ -234,4 +236,24 @@ tasks.withType(JavaCompile).configureEach {
 
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
+}
+
+// ---- Modrinth 发布 ---------------------------------------------------------
+// 由 CI 驱动：推 tag 后 release workflow 注入 MODRINTH_TOKEN / MODRINTH_PROJECT_ID /
+// MODRINTH_CHANGELOG，再执行 `./gradlew modrinth`。本地没有这些变量也能正常构建，
+// 只是不要执行 modrinth 任务。
+modrinth {
+    token = System.getenv('MODRINTH_TOKEN')
+    projectId = System.getenv('MODRINTH_PROJECT_ID') ?: 'thaumaturge-tooltip-plus'
+    versionNumber = mod_version
+    versionName = "${mod_name} ${mod_version}"
+    versionType = 'release'
+    uploadFile = tasks.named('jar')
+    gameVersions = ['1.21.1']
+    loaders = ['neoforge']
+    changelog = System.getenv('MODRINTH_CHANGELOG') ?: 'See the GitHub release notes.'
+    // Thaumaturge 本体未上架 Modrinth（上游 gradle.properties 中 modrinth_id 为空），
+    // minotaur 若声明不存在的 required.project 会直接失败，故不在此声明平台级依赖；
+    // 运行期必需前置由 jar 内 neoforge.mods.toml 与 Modrinth 项目页正文标明。
+    // debugMode = true
 }

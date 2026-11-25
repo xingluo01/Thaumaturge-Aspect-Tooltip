@@ -4,7 +4,7 @@
 
 - JDK 21（toolchain 固定），可选 JDK 25 供 Gradle 自身使用。
   `gradle.properties` 的 `org.gradle.java.installations.paths` 指向实际安装路径。
-- Thaumaturge 本体 jar 放进 `libs/`（见下方的开放环境 mod 一节）。
+- Thaumaturge 本体 1.1.0 已通过 CurseMaven 坐标 `curse.maven:thaumaturge-1628024:9452543` 声明，构建与 dev 运行期自动下载，无需手工放进 `libs/`。
 - Gradle 9.5 由 wrapper 自动下载；首次构建需联网。
 
 ## 开放环境 mod（dev runtime）
@@ -17,13 +17,14 @@ dev client 加载的 mod 全部走 `localRuntime`，不进成品 jar、不进 gi
 ### 前置（必须）
 
 Thaumaturge 1.1.0 是 required 前置，缺它 tooltip 注入拿不到要素数据、启动也会失败。
-本机没有公开 Maven 坐标，用本地 jar 同时做编译期与运行期依赖：
+已确认官方 CurseForge 项目（ID `1628024` / File `9452543`，`thaumaturge-1.21.1-NeoForge-1.1.0.jar`）
+通过 CurseMaven 可达，直接用坐标同时做编译期与运行期依赖：
 
 | 配置 | 作用 |
 |---|---|
-| `compileOnly files('libs/thaumaturge-...jar')` | main 源集编译期可见要素 API |
-| `clientCompileOnly files('libs/thaumaturge-...jar')` | client 源集编译期可见 |
-| `localRuntime files('libs/thaumaturge-...jar')` | dev client / server / data 运行期真正加载 |
+| `compileOnly 'curse.maven:thaumaturge-1628024:9452543'` | main 源集编译期可见要素 API |
+| `clientCompileOnly 'curse.maven:thaumaturge-1628024:9452543'` | client 源集编译期可见 |
+| `localRuntime 'curse.maven:thaumaturge-1628024:9452543'` | dev client / server / data 运行期真正加载 |
 
 Thaumaturge 与 ExtendedAE 在 dev 环境还需要两个运行期前置，均有官方 Modrinth Maven 源，
 必须用坐标声明，不得从整合包拷 jar：
@@ -46,7 +47,7 @@ BlameJared（JEI）、Latvian（KubeJS/Rhino）。版本与整合包一致，测
 
 | 分组 | modid（版本） | 用途 |
 |---|---|---|
-| 本体与必需前置 | `thaumaturge` 1.1.0、`glodium` 1.21-2.2、`lithostitched` 1.8.1、`guideme` 21.1.22、`mezz_config` 0.7.1-standalone、`mezz_config_gui` 0.5.5、`ae2wtlib_api` 19.5.1 | 本模组前置与运行期硬依赖；本体 jar 在 `libs/` 根 |
+| 本体与必需前置 | `thaumaturge` 1.1.0、`glodium` 1.21-2.2、`lithostitched` 1.8.1、`guideme` 21.1.22、`mezz_config` 0.7.1-standalone、`mezz_config_gui` 0.5.5、`ae2wtlib_api` 19.5.1 | 本模组前置与运行期硬依赖，均走 Maven 坐标 |
 | 公共库与脚本 | `architectury` 13.0.11、`cloth_config` 15.0.140、`curios` 9.5.1、`geckolib` 4.9.3、`ftblibrary` 2101.1.39、`modernui` 3.13.0.1、`kubejs` 2101.7.2、`rhino` 2101.2.7 | 公共库、UI 底座、脚本环境，可动态改 tooltip 做对照 |
 | 渲染、性能与诊断 | `sodium` 0.6.13、`fusion` 1.3.16、`modernfix` 5.27.27、`spark` 1.10.124、`mod_menu` 1.0.2 | 验证优化环境下的 tooltip，并用 spark 定位卡顿 |
 | Tooltip / JEI 验证 | `jade` 15.10.6、`jadeaddons` 6.1.2、`jei` 19.70.0.469、`jecharacters` 4.5.30、`itemzoomer` 2.0.1、`polymorph` 1.1.0 | tooltip 增强、文本叠加、拼音搜索与多结果提示的主要对照目标 |
@@ -226,7 +227,7 @@ Windows 可直接双击 `run_client.bat`（本地脚本，不进 git）。
 
 ## 启动故障
 
-- **找不到 Thaumaturge 类**：`libs/` 里没有 jar，或文件名与 build.gradle 的 files() 路径不一致。
+- **找不到 Thaumaturge 类**：检查网络能否访问 `https://cursemaven.com`，以及 `build.gradle` 中的 `curse.maven:thaumaturge-1628024:9452543` 坐标解析是否成功。
 - **toolchain 解析失败**：`org.gradle.java.installations.paths` 指向的 JDK 不存在；
   改成实际路径，或删掉该行让 foojay 自动下载。
 - **mod 加载报前置缺失**：dev client 没加载 `localRuntime` 的 Thaumaturge，

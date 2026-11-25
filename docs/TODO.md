@@ -11,5 +11,4 @@
 
 ## 发布前
 
-- [ ] 接 GitHub Release CI（照 `docs/RELEASE.md`）。
-- [ ] Modrinth / CurseForge 项目页与依赖声明。
+- [ ] 在 GitHub 仓库配置 `MODRINTH_TOKEN` 与 `CURSEFORGE_TOKEN`（及可选 Variables `MODRINTH_PROJECT_ID` / `CURSEFORGE_PROJECT_ID`），推送 `v0.1.2` tag 首次验证 CI 全链路。

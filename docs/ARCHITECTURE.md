@@ -30,7 +30,7 @@
 ## 要素数据来源
 
 只经 Thaumaturge 的公开 API 读，包为 `com.leclowndu93150.thaumaturge.api.aspect`。
-以下签名已用 `javap` 对 `libs/thaumaturge-1.21.1-NeoForge-1.1.0.jar` 核对过，改版本要重核：
+以下签名已用 `javap` 对 Thaumaturge 1.1.0（当前走 CurseMaven 坐标 `curse.maven:thaumaturge-1628024:9452543`）核对过，改版本要重核：
 
 | 用途 | 签名 |
 |---|---|

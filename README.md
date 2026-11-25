@@ -19,14 +19,20 @@ Thaumaturge 本体给部分物品显示要素信息，显示方式随物品而�
 - NeoForge 21.1.265+
 - **Thaumaturge 1.1.0+**（required，未打包，需单独安装）
 
+## 下载
+
+- Modrinth：https://modrinth.com/mod/thaumaturge-tooltip-plus
+- CurseForge：https://www.curseforge.com/projects/1825579（Project ID `1825579`）
+
 ## 构建
 
 ```bash
 ./gradlew build
 ```
 
-编译期与 dev 运行期都需要 Thaumaturge 本体 jar 放在 `libs/`，该文件不进 git；
-放置方法与路径见 `docs/DEV_ENV.md`，本机绝对路径见（不进 git 的）`docs/LOCAL_DEPS.md`。
+编译期与 dev 运行期依赖的 Thaumaturge 1.1.0 已通过官方 CurseMaven 坐标自动解析，
+直接运行 `./gradlew build` 即可产出 `build/libs/thaumaturge_tooltip_plus-<版本>.jar`。
+其余 dev 运行期测试模组与环境说明见 `docs/DEV_ENV.md`（本机路径索引见不进 git 的 `docs/LOCAL_DEPS.md`）。
 
 ## 文档
 
@@ -34,4 +40,4 @@ Thaumaturge 本体给部分物品显示要素信息，显示方式随物品而�
 
 ## 许可
 
-LGPL-3.0，详见 `LICENSE`。
+AGPL-3.0，详见 `LICENSE`。
